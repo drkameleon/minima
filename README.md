@@ -1,6 +1,5 @@
-Mini.ma
-Web Framework
-=======
+Mini.ma Web Framework
+=====================
 
 Copyright (c) 2009-2014 Ioannis Zafeiropoulos (aka Dr.Kameleon).  
 All rights reserved.
