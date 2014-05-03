@@ -1,0 +1,16 @@
+##********************************************************
+## Minima 
+## Web Framework
+## 
+## (c) 2009-2014, Dr.Kameleon
+##********************************************************
+## .htaccess
+##********************************************************
+
+<IfModule mod_rewrite.c>
+	RewriteEngine On
+	RewriteBase /minima/
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteCond %{REQUEST_FILENAME} !-d
+	RewriteRule . index.lgm [L]
+</IfModule>
