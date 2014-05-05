@@ -1,0 +1,8 @@
+
+One ::
+{
+	index(user,id) =>
+	{
+		out "User : {:user}, ID : {:id}";
+	}
+}

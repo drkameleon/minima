@@ -1,0 +1,128 @@
+/********************************************************
+** Minima 
+** Web Framework
+** 
+** (c) 2009-2014, Dr.Kameleon
+*********************************************************
+** system/dbTable.lgm
+*********************************************************/
+
+DbTable ::
+{
+	new(db,name,fields) =>
+	{
+		_settings = 
+		[
+			.name 		: 	name,
+			.fields		:	fields
+		];
+
+		this = [ 
+			._db	   : db,
+			._settings : _settings 
+		];
+
+		this += this.initFields();
+
+		this._settings = this._settings.deleteItemWithKey(.fields);
+
+		==> this;
+	}
+
+	fields(this) =>
+	{
+		ret = [];
+
+		@ key,field -> this :
+			key.startsWith("_") == false :
+				ret += field;
+
+		==> ret;
+	}
+
+	fieldNames(this) => this.fields().map("$.name");
+
+	initFields(this) =>
+	{
+		fields = [:];
+
+		@ name,description -> this._settings.fields :
+			fields += [ name : DbTableField::new(name,description) ];
+
+		==> fields;
+	}
+
+	create(this) =>
+	{
+		keys = [];
+		types = [];
+
+		@ field -> this.fields() :
+		{
+			keys += field.name;
+			types += field.type;
+		}
+
+		Database::create(
+				this._db, 
+				this._settings.name, 
+				keys,
+				types
+			);
+	}
+
+	insertNew(this,values) =>
+	{
+		values.count() != this.fields().count() : panic "Unequal number of values for insertion";
+
+		==> Database::insert(
+				this._db,
+				this._settings.name,
+				this.fieldNames(),
+				values
+			);
+	}
+
+	deleteRows(this,where) =>
+	{
+		Database::delete(
+				this._db,
+				this._settings.name,
+				where
+			);
+	}
+
+	selectRows(this,what,where) =>
+	{
+		==> Database::select(
+				this._db,
+				this._settings.name,
+				what,
+				where
+			);
+	}
+
+	selectAllRows(this,where) =>
+	{
+		==> Database::selectAll(
+				this._db,
+				this._settings.name,
+				where
+			);
+	}
+
+	selectAllRows(this) =>
+	{
+		==> this.selectAllRows("1");
+	}
+	
+	updateRows(this,keyvalues,where) =>
+	{
+		Database::update(
+				this._db,
+				this._settings.name,
+				keyvalues,
+				where
+			);
+	}
+}

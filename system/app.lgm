@@ -1,0 +1,130 @@
+/********************************************************
+** Minima 
+** Web Framework
+** 
+** (c) 2009-2014, Dr.Kameleon
+*********************************************************
+** system/app.lgm
+*********************************************************/
+
+import system.controller;
+import system.view;
+import system.db;
+import system.dbTable;
+import system.dbTableField;
+
+import app.scheme;
+import app.settings;
+
+import app.controllers.*;
+import app.helpers.*;
+import app.models.*;
+import app.views.*;
+
+
+App :: 
+{
+
+	new(path) =>
+	{
+		this =
+		[
+			.base 			: path.directory() + "/",
+			.scheme			: Scheme::new(),
+			.settings 		: Settings::new()
+		];
+
+		this += this.initControllers();
+		this += this.initViews();
+		this += this.initDatabase();
+
+		==> this;
+	}
+
+	base(this,path) => this.base + path;
+
+	getListing(this,what) =>
+	{
+		base = this.base;
+		path = this.base("app/{:what}");
+		contents = path.directoryContents().filter("$.isDirectory()==false");
+		contents = contents.map("$ - '{:base}' - 'app/{:what}/'");
+
+		==> contents;
+	}
+
+	initDatabase(this) =>
+	{
+		database = Db::new(this.base,this.scheme,this.settings.database);
+
+		==> [ .db : database ];
+	}
+
+	initControllers(this) =>
+	{
+		contents = this.getListing("controllers");
+
+		controllers = [:];
+
+		@ content -> contents :
+			controllers += [ content.withoutExtension() : Controller::new(this.base,content) ];
+
+		==> [ .controllers : controllers ];
+	}
+
+	initViews(this) =>
+	{
+		contents = this.getListing("views");
+
+		views = [:];
+
+		@ content -> contents :
+			views += [ content.withoutExtension() : View::new(this.base,content) ];
+
+		==> [ .views : views ];
+	}
+
+	controllerExists(this,controller) => 
+	{
+		controllerPath = controller.join("/");
+
+		==> this.controllers.keyExists(controllerPath); 
+	};
+
+	resolve(this,uri,query,get) =>
+	{
+		// Dissect requested URL
+		request = uri - this.settings.root - query - "?";
+
+		// Find routes & redirections
+		@ route,value -> this.settings.routes :
+			request = request.xreplace(route,value);
+
+		// Reconstruct path
+		requestPaths = request.split("/").filter("$.isEmpty()==false");
+
+		// Retrieve parts
+		method = requestPaths.last();
+		path = requestPaths[..requestPaths.count()-1];
+
+		// Check if controller exists
+		this.controllerExists(path)	== false : 
+		{
+			// Check if we just omitted 'index'
+			method = "index";
+			path = requestPaths;
+
+			this.controllerExists(path) == false : panic "Controller not found";
+		}
+
+		path = path.join("/");
+
+		this.controllers[path].call(this,method,get);
+	}
+
+	finalize(this) =>
+	{
+		// Finalization code
+	}
+	
+}

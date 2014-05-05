@@ -1,0 +1,31 @@
+/********************************************************
+** Minima 
+** Web Framework
+** 
+** (c) 2009-2014, Dr.Kameleon
+*********************************************************
+** system/dbTableField.lgm
+*********************************************************/
+
+DbTableField ::
+{
+	new(name,description) =>
+	{
+		this = [ .name : name ];
+
+		isArray(description) :
+		{
+			this += [ .type 	: description[0] ];
+			this += [ .binding	: description[1] ];
+		}
+		else :
+		{
+			this += [ .type		: description ];
+			this += [ .binding 	: false ];
+		}
+
+		==> this;
+	}
+
+	
+}

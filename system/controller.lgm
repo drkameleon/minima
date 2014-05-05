@@ -1,0 +1,67 @@
+/********************************************************
+** Minima 
+** Web Framework
+** 
+** (c) 2009-2014, Dr.Kameleon
+*********************************************************
+** system/controller.lgm
+*********************************************************/
+
+Controller ::
+{
+	new(base,path) =>
+	{
+		==>
+		[
+			.base	:	base,
+			.path	:	path.withoutExtension(),
+			.name	:	path.withoutExtension().split("/").last().ucaseFirst()
+		];
+	}
+
+	callingPatternMatches(this,method,get) =>
+	{
+		methodInfo = this.name.methodInfo(method)[0];
+
+		// Check if number is correct
+		(methodInfo.args - "app").count() != get.size() : ==> false;
+
+		// Check args one-by-one
+		@ arg,value -> get : 
+			methodInfo.args.contains(arg) == false : ==> false;
+
+		==> true;
+	}
+
+	getArguments(this,method,get) =>
+	{
+		methodInfo = this.name.methodInfo(method)[0];
+
+		result = [];
+
+		@ arg -> (methodInfo.args - "app") : 
+		{
+			isNumeric(get[arg]) : result += number(get[arg]);
+						   else : result += "\"" + get[arg] + "\"";
+		}
+
+		==> result;
+	}
+
+	call(this,app,method,get) =>
+	{
+		// Verify we're ok
+		this.name.methodExists(method) == false 		: panic "Method doesn't exist";
+		this.callingPatternMatches(method,get) == false : panic "Calling pattern doesn't match";
+
+		// Construct arguments string
+		arguments = this.getArguments(method,get);
+		arguments = ["{:app}"] + arguments;
+		arguments = arguments.join(",");
+
+		// Ready to execute
+		controllerName = this.name;
+		exec "{:controllerName}::{:method}({:arguments});";
+	}
+	
+}

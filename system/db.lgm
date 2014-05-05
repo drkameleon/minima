@@ -1,0 +1,68 @@
+/********************************************************
+** Minima 
+** Web Framework
+** 
+** (c) 2009-2014, Dr.Kameleon
+*********************************************************
+** system/db.lgm
+*********************************************************/
+
+Db ::
+{
+	new(base,scheme,settings) =>
+	{
+		_settings = 
+		[
+			.type		:	settings.type,
+			.username	:	settings.username,
+			.password	:	settings.password,
+			.scheme		:	scheme
+		];
+
+		this = [ 
+			._db	   : base + "app/" + settings.name,
+			._settings : _settings 
+		];
+		this += this.initTables();
+
+		this._settings = this._settings.deleteItemWithKey(.scheme);
+
+		this.setup();
+
+		==> this;
+	}
+
+	tables(this) =>
+	{
+		ret = [];
+
+		@ key,table -> this :
+			key.startsWith("_") == false :
+				ret += table;
+
+		==> ret;
+	}
+
+	initTables(this) =>
+	{
+		tables = [:];
+
+		@ name,fields -> this._settings.scheme :
+			tables += [ name : DbTable::new(this._db,name,fields) ];
+
+		==> tables;
+	}
+
+	setup(this) =>
+	{
+		// Open or create database
+		this._db.open();
+
+		@ table -> this.tables() :
+		{
+			table.DbTable::create();
+		}
+	}
+
+	
+}

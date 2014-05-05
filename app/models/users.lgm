@@ -1,0 +1,16 @@
+
+Users ::
+{
+	createNew(app,username,password,email,privileges) =>
+	{
+		app.db.users.insertNew([
+			username,
+			password,
+			email,
+			"now",
+			privileges
+		]);
+		Utils::someHelperFunc();
+		inspect(app);
+	}
+}

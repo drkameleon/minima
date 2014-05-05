@@ -1,0 +1,25 @@
+/********************************************************
+** Minima 
+** Web Framework
+** 
+** (c) 2009-2014, Dr.Kameleon
+*********************************************************
+** index.lgm
+*********************************************************/
+
+// Imported packages
+import system.app;
+
+// Create new application
+App = App::new(__AbsolutePath);
+
+// Resolve requested Url
+App.resolve(__RequestUri, __QueryString, __Get);
+
+// Finalize
+App.finalize();
+
+/********************************************************
+** This is the end,
+** my only friend, the end...
+*********************************************************/

@@ -1,0 +1,8 @@
+
+Utils ::
+{
+	someHelperFunc() =>
+	{
+		out "IN someHelperFunc";
+	}
+}

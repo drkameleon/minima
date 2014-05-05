@@ -1,0 +1,47 @@
+/********************************************************
+** Minima 
+** Web Framework
+** 
+** (c) 2009-2014, Dr.Kameleon
+*********************************************************
+** app/scheme.lgm
+*********************************************************/
+
+Scheme :: 
+{
+
+	new() =>
+	{
+		==>
+		[
+			/**************************************
+			 Tables with fields
+
+			 Type can be :
+			 - TEXT
+			 - INTEGER
+			 - REAL
+			 - @table.field
+			 **************************************/
+
+			.users :
+			[
+				.username			: "TEXT",
+				.password			: "TEXT",
+				.email				: "TEXT",
+				.registrationDate	: "TEXT",
+				.privileges			: "INTEGER"
+			],
+
+			.posts :
+			[
+				.title				: "TEXT",
+				.content			: "TEXT",
+				.creationDate		: "TEXT",
+				.creator			: [ "INTEGER", "@users" ]
+			]
+
+		];
+	}
+
+}

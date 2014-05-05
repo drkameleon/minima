@@ -1,0 +1,74 @@
+/********************************************************
+** Minima 
+** Web Framework
+** 
+** (c) 2009-2014, Dr.Kameleon
+*********************************************************
+** system/view.lgm
+*********************************************************/
+
+View ::
+{
+	new(base,path) =>
+	{
+		==>
+		[
+			.base	:	base,
+			.path	:	path.withoutExtension(),
+			.type	:	path.extension() - "."
+		];
+	}
+
+	load(this,args) =>
+	{
+		viewPath = this.base + "app/views/" + this.path;
+
+		this.type == "html" :
+		{
+			viewPath += ".html";
+			viewContent = viewPath.read();
+
+			out viewContent;
+		}
+		else : this.type == "php" :
+		{
+			viewPath += ".php";
+			viewContent = execute("php \"{:viewPath}\"");
+
+			out viewContent;
+		}
+		else : this.type == "py" :
+		{
+			viewPath += ".py";
+			viewContent = execute("python \"{:viewPath}\"");
+
+			out viewContent;
+		}
+		else :
+		{
+			viewPath += ".lgmx";
+			viewContent = viewPath.read();
+			viewContent = viewContent.Html::parse();
+
+			variables = "";
+
+			@ key,value -> args :
+			{
+				variables += "{:key} = ";
+
+				isString(value) : variables += "\"{:value}\";\n";
+						   else : variables += "{:value};\n";
+			}
+
+			viewContent = variables + viewContent;
+
+			exec viewContent;
+		}
+	}
+
+	load(this) =>
+	{
+		this.load([:]);
+	}
+	
+}

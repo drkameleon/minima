@@ -1,0 +1,13 @@
+
+Home :: 
+{
+
+	index(app) =>
+	{
+		out "In index";
+
+		app.Users::createNew("drkameleon","123456","drkameleon@gmail.com",666);
+		app.views["home"].load( ["username":"drkameleon","age":28] );
+	}
+
+}
