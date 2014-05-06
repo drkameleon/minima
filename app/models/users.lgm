@@ -11,6 +11,5 @@ Users ::
 			privileges
 		]);
 		Utils::someHelperFunc();
-		inspect(app);
 	}
 }

@@ -1,0 +1,47 @@
+/*
+#define html(X) out "<html>"; X; out "</html>";
+#define head(X) out "<head>"; X; out "</head>";
+#define head(X,Y) out "<head " + X.typeIt() + ">"; Y; out "</head>";
+#define title(X) out "<title>"; X; out "</title>";
+#define body(X) out "<body>"; X; out "</body>";
+#define h1(X) out "<h1>"; X; out "</h1>";
+#define h2(X) out "<h2>"; X; out "</h2>";
+#define h3(X) out "<h3>"; X; out "</h3>";
+//#define h3(X,Y) out "<h3 " + X.typeIt() + ">"; Y; out "</h3>";
+//#define p(X) out "<p>"; X; out "</p>";
+//#define p(X,Y) out "<p " + X.typeIt() + ">"; Y; out "</p>";
+//#define div(X) out "<div>" + X; out "</div>";
+//#define div(X,Y) out "<div " + X.typeIt() + ">"; Y; out "</div>";
+
+typeIt(x) =>
+{
+	kvs = [];
+	@ key,value -> x : kvs += "{:key}=\"{:value}\"";
+	==> kvs.join(" ");
+}
+
+html
+(
+	head(
+		title(>> "Home page | InSili.co")
+	)
+
+	body(
+		h1(>> "InSili.co")
+		h2(>> "This is our homepage")
+
+		@ i->["one","two","three"] :
+		{
+			div([.class:"post"],
+
+				h3([.class:"post-title"], >> i)
+				p(
+					// This is the content
+
+					>> "This is the content"
+				)
+			)
+		}
+	)
+)
+*/

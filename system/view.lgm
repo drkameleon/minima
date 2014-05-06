@@ -62,6 +62,8 @@ View ::
 
 			viewContent = variables + viewContent;
 
+			//out viewContent;
+
 			exec viewContent;
 		}
 	}

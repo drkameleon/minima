@@ -1,5 +1,23 @@
+<html>
+	<head>
+		<title><%= "The title" %></title>
+	</head>
+	<body>
+		<h1>InSili.co</h1>
+		<%
+			@ i -> ["one","two","three"] :
+				out "i = {:i}<br>";
+		%>
+		<h3>And let's try splitting the blocks...</h3>
+		<% 
+		users = [
+			[ .name:"drkameleon", .age:28 ],
+			[ .name:"ozmax",	  .age:24 ]
+		];
 
-<h1>This is home</h1>
-Username : <!--: >> username; --> <br>
-Age : <!--: >> age; -->
-
+		@ user -> users :
+		{ %>
+			<h5><%= user %></h5>
+		<% } %>
+	</body>
+</html>
